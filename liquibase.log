@@ -1,54 +1,76 @@
-Jun 02, 2025 9:43:42 AM liquibase.changelog
+Jun 03, 2025 6:01:02 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations/db.changelog-202505271446.sql
-Jun 02, 2025 9:43:42 AM liquibase.changelog
+Jun 03, 2025 6:01:03 PM liquibase.changelog
+INFO: Creating database history table with name: board.databasechangelog
+Jun 03, 2025 6:01:03 PM liquibase.changelog
 INFO: Reading from board.databasechangelog
-Jun 02, 2025 9:43:42 AM liquibase.changelog
+Jun 03, 2025 6:01:03 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations/db.changelog-202505281127.sql
-Jun 02, 2025 9:43:42 AM liquibase.changelog
+Jun 03, 2025 6:01:03 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations/db.changelog-202505281134.sql
-Jun 02, 2025 9:43:42 AM liquibase.changelog
+Jun 03, 2025 6:01:03 PM liquibase.changelog
 INFO: Reading resource: db/changelog/migrations/db.changelog-202505281137.sql
-Jun 02, 2025 9:43:42 AM liquibase.changelog
-INFO: Change failed validation!
-Jun 02, 2025 9:43:42 AM liquibase.command
-INFO: Logging exception.
-ERROR: Exception Details
-ERROR: Exception Primary Class:  ValidationFailedException
-ERROR: Exception Primary Reason:  Validation Failed:
-     2 changesets check sum
-          db/changelog/migrations/db.changelog-202505281134.sql::202505281134::thiago was: 9:51ef408f599fb38c2f198ba433b97269 but is now: 9:92e1a859b3bc5b63431432e1f9d41a21
-          db/changelog/migrations/db.changelog-202505281137.sql::202505281137::thiago was: 9:107950aa8a3fce34deb80adca7e73fdb but is now: 9:e6bd6259453164eeb75c596d139758b8
+Jun 03, 2025 6:01:03 PM liquibase.changelog
+INFO: Reading resource: db/changelog/migrations/db.changelog-202506021026.sql
+Jun 03, 2025 6:01:03 PM liquibase.snapshot
+INFO: Creating snapshot
+Jun 03, 2025 6:01:03 PM liquibase.lockservice
+INFO: Successfully acquired change log lock
+Jun 03, 2025 6:01:03 PM liquibase.command
+INFO: Using deploymentId: 8984462497
+Jun 03, 2025 6:01:03 PM liquibase.changelog
+INFO: Reading from board.databasechangelog
+Running Changeset: db/changelog/migrations/db.changelog-202505271446.sql::202408191938::thiago
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: Custom SQL executed
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations/db.changelog-202505271446.sql::202408191938::thiago ran successfully in 139ms
+Running Changeset: db/changelog/migrations/db.changelog-202505281127.sql::202505281127::thiago
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: Custom SQL executed
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations/db.changelog-202505281127.sql::202505281127::thiago ran successfully in 114ms
+Running Changeset: db/changelog/migrations/db.changelog-202505281134.sql::202505281134::thiago
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: Custom SQL executed
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations/db.changelog-202505281134.sql::202505281134::thiago ran successfully in 109ms
+Running Changeset: db/changelog/migrations/db.changelog-202505281137.sql::202505281137::thiago
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: Custom SQL executed
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations/db.changelog-202505281137.sql::202505281137::thiago ran successfully in 108ms
+Running Changeset: db/changelog/migrations/db.changelog-202506021026.sql::202505281137::thiago
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: Custom SQL executed
+Jun 03, 2025 6:01:04 PM liquibase.changelog
+INFO: ChangeSet db/changelog/migrations/db.changelog-202506021026.sql::202505281137::thiago ran successfully in 227ms
 
-ERROR: Exception Primary Source:  4.31.1
-Jun 02, 2025 9:43:42 AM liquibase.command
+UPDATE SUMMARY
+Run:                          5
+Previously run:               0
+Filtered out:                 0
+-------------------------------
+Total change sets:            5
+
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: UPDATE SUMMARY
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: Run:                          5
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: Previously run:               0
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: Filtered out:                 0
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: -------------------------------
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: Total change sets:            5
+Jun 03, 2025 6:01:04 PM liquibase.util
+INFO: Update summary generated
+Jun 03, 2025 6:01:04 PM liquibase.command
+INFO: Update command completed successfully.
+Liquibase: Update has been successful. Rows affected: 5
+Jun 03, 2025 6:01:04 PM liquibase.lockservice
+INFO: Successfully released change log lock
+Jun 03, 2025 6:01:04 PM liquibase.command
 INFO: Command execution complete
-liquibase.exception.CommandExecutionException: liquibase.exception.ValidationFailedException: Validation Failed:
-     2 changesets check sum
-          db/changelog/migrations/db.changelog-202505281134.sql::202505281134::thiago was: 9:51ef408f599fb38c2f198ba433b97269 but is now: 9:92e1a859b3bc5b63431432e1f9d41a21
-          db/changelog/migrations/db.changelog-202505281137.sql::202505281137::thiago was: 9:107950aa8a3fce34deb80adca7e73fdb but is now: 9:e6bd6259453164eeb75c596d139758b8
-
-	at liquibase.command.CommandScope.lambda$execute$6(CommandScope.java:300)
-	at liquibase.Scope.child(Scope.java:210)
-	at liquibase.Scope.child(Scope.java:186)
-	at liquibase.command.CommandScope.execute(CommandScope.java:241)
-	at liquibase.Liquibase.lambda$update$0(Liquibase.java:216)
-	at liquibase.Scope.lambda$child$0(Scope.java:201)
-	at liquibase.Scope.child(Scope.java:210)
-	at liquibase.Scope.child(Scope.java:200)
-	at liquibase.Scope.child(Scope.java:179)
-	at liquibase.Liquibase.runInScope(Liquibase.java:1333)
-	at liquibase.Liquibase.update(Liquibase.java:205)
-	at liquibase.Liquibase.update(Liquibase.java:188)
-	at liquibase.Liquibase.update(Liquibase.java:175)
-	at liquibase.Liquibase.update(Liquibase.java:155)
-	at br.com.dio.persistence.migration.MigrationStrategy.executeMigration(MigrationStrategy.java:37)
-	at br.com.dio.BoardApplication.main(BoardApplication.java:14)
-Caused by: liquibase.exception.ValidationFailedException: Validation Failed:
-     2 changesets check sum
-          db/changelog/migrations/db.changelog-202505281134.sql::202505281134::thiago was: 9:51ef408f599fb38c2f198ba433b97269 but is now: 9:92e1a859b3bc5b63431432e1f9d41a21
-          db/changelog/migrations/db.changelog-202505281137.sql::202505281137::thiago was: 9:107950aa8a3fce34deb80adca7e73fdb but is now: 9:e6bd6259453164eeb75c596d139758b8
-
-	at liquibase.changelog.DatabaseChangeLog.validate(DatabaseChangeLog.java:384)
-	at liquibase.command.core.helpers.DatabaseChangelogCommandStep.run(DatabaseChangelogCommandStep.java:88)
-	at liquibase.command.CommandScope.lambda$execute$6(CommandScope.java:253)
-	... 15 more
