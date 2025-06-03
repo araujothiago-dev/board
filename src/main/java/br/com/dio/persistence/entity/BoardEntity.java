@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -15,6 +16,8 @@ import static br.com.dio.persistence.entity.BoardColumnKindEnum.INITIAL;
 public class BoardEntity {
     private Long id;
     private String name;
+    private boolean deleted = true;
+    private OffsetDateTime deleted_at;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<BoardColumnEntity> boardColumns = new ArrayList<>();

@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.Optional;
+
+import static br.com.dio.persistence.converter.OffSetDateTimeConverter.toTimestamp;
 
 @AllArgsConstructor
 public class BoardDAO {
@@ -25,16 +28,18 @@ public class BoardDAO {
     }
 
     public void delete(final Long id) throws SQLException {
-        var sql = "DELETE FROM BOARDS WHERE id = ?;";
+        var sql = "UPDATE BOARDS SET deleted = false, deleted_at = ? WHERE id = ? AND deleted = true;";
         try (var statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, id);
+            var i = 1;
+            statement.setTimestamp(i++, toTimestamp(OffsetDateTime.now()));
+            statement.setLong(i, id);
             statement.executeUpdate();
 
         }
     }
 
     public Optional<BoardEntity> findById(final Long id) throws SQLException {
-        var sql = "SELECT id, name FROM BOARDS WHERE id = ?;";
+        var sql = "SELECT id, name FROM BOARDS WHERE id = ? AND deleted = true;";
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeQuery();
@@ -50,7 +55,7 @@ public class BoardDAO {
     }
 
     public boolean exists(final Long id) throws SQLException {
-        var sql = "SELECT 1 FROM BOARDS WHERE id = ?;";
+        var sql = "SELECT 1 FROM BOARDS WHERE id = ? AND deleted = true;";
         try(var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeQuery();
