@@ -16,9 +16,11 @@ public class BoardDAO {
     private final Connection connection;
 
     public BoardEntity insert(final BoardEntity entity) throws SQLException {
-        var sql = "INSERT INTO BOARDS (name) values (?);";
+        var sql = "INSERT INTO BOARDS (name, deleted) values (?, ?);";
+        var i = 1;
         try (var statement = connection.prepareStatement(sql)) {
-            statement.setString(1, entity.getName());
+            statement.setString(i++, entity.getName());
+            statement.setBoolean(i, entity.isDeleted());
             statement.executeUpdate();
             if (statement instanceof StatementImpl impl) {
                 entity.setId(impl.getLastInsertID());
