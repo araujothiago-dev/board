@@ -16,7 +16,7 @@ import static br.com.dio.persistence.entity.BoardColumnKindEnum.INITIAL;
 public class BoardEntity {
     private Long id;
     private String name;
-    private boolean deleted = true;
+    private boolean deleted = false;
     private OffsetDateTime deleted_at;
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
