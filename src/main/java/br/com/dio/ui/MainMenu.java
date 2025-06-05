@@ -8,7 +8,6 @@ import br.com.dio.service.BoardService;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,23 +20,14 @@ public class MainMenu {
     public void execute() throws SQLException {
         while (true) {
             System.out.println("Bem vindo ao gerenciador de boards, escolha uma opção");
+            int option = -1;
 
             System.out.println("1 - Criar um novo board");
             System.out.println("2 - Selecionar um board existente");
             System.out.println("3 - Excluir um board");
             System.out.println("4 - Sair");
 
-            int option = -1;
-
-            try{
-                option = Integer.parseInt(
-                        scanner.nextLine().trim()
-                );
-
-            } catch (NumberFormatException e) {
-                System.out.println("Opção inválida, informe uma opção do menu.") ;
-                continue;
-            }
+            option = readInt();
 
             switch (option) {
                 case 1 -> createBoard();
@@ -51,83 +41,73 @@ public class MainMenu {
 
     private void createBoard() throws SQLException{
         try {
-            var entity = new BoardEntity();
+            BoardEntity entity = new BoardEntity();
+
             System.out.println("Informe o nome do seu board. ");
-            String nomeBoard = scanner.next().trim();
-            scanner.nextLine();
 
-            if (nomeBoard.isEmpty() || nomeBoard == null || nomeBoard.equals(" ")) {
-                throw new RuntimeException("Nome inválido. O valor não pode ser vazio.\n");
-            }
+            entity.setName(readString());
 
-            entity.setName(nomeBoard);
-
-            String option;
-            var additionalColumns = 0;
-            // while (true) { tentar receber int
+            int additionalColumns = 0;
             do {
                 System.out.println("Seu board terá colunas além das 3 padrões? Se sim informe quantas, senão digite '0'");
+                additionalColumns = readInt();
 
-                option = scanner.nextLine().trim();
 
-                if (option.isEmpty() ) {
-                    System.out.println("Opção inválida. Informe um número.\n");
+                if (additionalColumns < 0) {
+                    System.out.println("Opção inválida. Informe um número inteiro.\n");
                     continue;
                 }
-                additionalColumns = Integer.parseInt(option);
+            } while (additionalColumns < 0);
 
-                List<BoardColumnEntity> columns = new ArrayList<>();
+            List<BoardColumnEntity> columns = new ArrayList<>();
 
-                System.out.println("Informe o nome da coluna inicial do board. ");
-                var initialColumnName = scanner.next();
-                var initialColumn = createColumn(initialColumnName, INITIAL, 0);
-                columns.add(initialColumn);
+            System.out.println("Informe o nome da coluna inicial do board. ");
+            String initialColumnName = readString();
+            columns.add(createColumn(initialColumnName, INITIAL, 0));
 
-                for(int i = 0; i < additionalColumns; i++) {
-                    System.out.println("Informe o nome da coluna de tarefa pendente do board. ");
-                    var pendingColumnName = scanner.next();
-                    var pendingColumn = createColumn(pendingColumnName, PENDING, i + 1);
-                    columns.add(pendingColumn);
-                }
+            for(int i = 0; i < additionalColumns; i++) {
+                System.out.println("Informe o nome da coluna de tarefa pendente do board. ");
+                String pendingColumnName = scanner.next();
+                columns.add(createColumn(pendingColumnName, PENDING, i + 1));
+            }
 
-                System.out.println("Informe o nome da coluna final. ");
-                var finalColumnName = scanner.next();
-                var finalColumn = createColumn(finalColumnName, FINAL, ++additionalColumns );
-                columns.add(finalColumn);
+            System.out.println("Informe o nome da coluna final. ");
+            String finalColumnName = readString();
+            columns.add(createColumn(finalColumnName, FINAL, +additionalColumns + 1));
 
-                System.out.println("Informe o nome da coluna de cancelamento do baord. ");
-                var cancelColumnName = scanner.next();
-                var cancelColumn = createColumn(cancelColumnName, CANCEL, ++additionalColumns );
-                columns.add(cancelColumn);
+            System.out.println("Informe o nome da coluna de cancelamento do baord. ");
+            String cancelColumnName = readString();
+            columns.add(createColumn(cancelColumnName, CANCEL, additionalColumns + 2));
 
-                entity.setBoardColumns(columns);
-                try(var connection = getConnection()) {
-                    var service = new BoardService(connection);
-                    service.insert(entity);
-                }
-            } while (option.isEmpty());
-            System.out.println("Boarde criado com sucesso.");
+            entity.setBoardColumns(columns);
+
+            try(var connection = getConnection()) {
+                BoardService service = new BoardService(connection);
+                service.insert(entity);
+            }
+
+            System.out.println("Board criado com sucesso.");
         } catch (Exception e) {
-            System.out.printf("Não foi possível criar board. " + e.getMessage() + "\n") ;
+            System.out.printf("Não foi possível criar board. Erro: " + e.getMessage() + "\n") ;
         }
     }
 
     private void selectBoard() throws SQLException{
         System.out.println("Informe o id do board que deseja selecionar. ");
-        var id = scanner.nextLong();
+        var id = readLong();
         try(var connection = getConnection()) {
             var service = new BoardQueryService(connection);
             var optional = service.findById(id);
-            optional.ifPresentOrElse(
-                    b -> new BoardMenu(b).excute(),
-                    () -> System.out.printf("Não foi encontrado board com o id %s|n", id)
+            service.findById(id).ifPresentOrElse(
+                    b -> new BoardMenu(b).excute(optional),
+                    () -> System.out.printf("Não foi encontrado board com o id %s\n", id)
             );
         }
     }
 
     private void deleteBoard() throws SQLException{
         System.out.println("Informe o id do boarde que deseja excluir. ");
-        var id = scanner.nextLong();
+        var id = readLong();
         try(var connection = getConnection()) {
             var service = new BoardService(connection);
             if (service.delete(id)) {
@@ -145,4 +125,37 @@ public class MainMenu {
         boardColum.setOrder(order);
         return boardColum;
     }
+
+    private Long readLong() {
+        while (true) {
+            String option = scanner.nextLine().trim();
+            try {
+                return Long.parseLong(option);
+            } catch (NumberFormatException e) {
+                System.out.print("Opção inválida. Informe um número inteiro:\n");
+            }
+        }
+    }
+
+    private int readInt() {
+        while (true) {
+            String option = scanner.nextLine().trim();
+            try {
+                return Integer.parseInt(option);
+            } catch (NumberFormatException e) {
+                System.out.print("Opção inválida. Informe um número inteiro:\n");
+            }
+        }
+    }
+
+    private String readString() {
+        while (true) {
+            String option = scanner.nextLine().trim();
+            if (!option.isEmpty()) {
+                return option;
+            }
+            System.out.print("Esse campo não pode ser vazio:\n");
+        }
+    }
+
 }
