@@ -30,7 +30,7 @@ public class BoardDAO {
     }
 
     public void delete(final Long id) throws SQLException {
-        var sql = "UPDATE BOARDS SET deleted = false, deleted_at = ? WHERE id = ? AND deleted = true;";
+        var sql = "UPDATE BOARDS SET deleted = false, deleted_at = ? WHERE id = ? AND deleted = false;";
         try (var statement = connection.prepareStatement(sql)) {
             var i = 1;
             statement.setTimestamp(i++, toTimestamp(OffsetDateTime.now()));
@@ -41,7 +41,7 @@ public class BoardDAO {
     }
 
     public Optional<BoardEntity> findById(final Long id) throws SQLException {
-        var sql = "SELECT id, name FROM BOARDS WHERE id = ? AND deleted = true;";
+        var sql = "SELECT id, name FROM BOARDS WHERE id = ? AND deleted = false;";
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeQuery();
@@ -57,7 +57,7 @@ public class BoardDAO {
     }
 
     public boolean exists(final Long id) throws SQLException {
-        var sql = "SELECT 1 FROM BOARDS WHERE id = ? AND deleted = true;";
+        var sql = "SELECT 1 FROM BOARDS WHERE id = ? AND deleted = false;";
         try(var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeQuery();
