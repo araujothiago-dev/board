@@ -23,16 +23,17 @@ public class BoardEntity {
     private List<BoardColumnEntity> boardColumns = new ArrayList<>();
 
     public BoardColumnEntity getInitialColumn() {
-        return getFilteredCOlumn(bc -> bc.getKind().equals(INITIAL));
+        return getFilteredColumn(bc -> bc.getKind().equals(INITIAL));
     }
 
     public BoardColumnEntity getCancelColumn(){
-        return getFilteredCOlumn(bc -> bc.getKind().equals(CANCEL));
+        return getFilteredColumn(bc -> bc.getKind().equals(CANCEL));
     }
 
-    private BoardColumnEntity getFilteredCOlumn(Predicate<BoardColumnEntity> filter) {
+    private BoardColumnEntity getFilteredColumn(Predicate<BoardColumnEntity> filter) {
         return boardColumns.stream()
                 .filter(filter)
-                .findFirst().orElseThrow();
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Coluna não encontrada."));
     }
 }
