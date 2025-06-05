@@ -17,7 +17,7 @@ public class CardDAO {
     private final Connection connection;
 
     public CardEntity insert(final CardEntity entity) throws SQLException {
-        var sql = "INSERT INTO BOARDS (name) values (?);";
+        var sql = "INSERT INTO CARDS (title, description, board_column_id) values (?, ?, ?);";
         try (var statement = connection.prepareStatement(sql)) {
             var i = 1;
             statement.setString(i++, entity.getTitle());
@@ -43,23 +43,26 @@ public class CardDAO {
     }
 
     public Optional<CardDetailsDTO> findById(final Long id) throws SQLException {
-        var sql = "SELECT c.id, " +
-                         "c.title, " +
-                         "c.description, " +
-                         "b.blocked_at, " +
-                         "b.block_reason, " +
-                         "c.board_column_id, " +
-                         "bc.name " +
-                         "(" +
-                         "SELECT COUNT(sub_b.id) " +
-                                "FROM BLOCKS sub_b " +
-                                "WHERE sub_b.card_id  = c.id" +
-                         ") blocks_amount" +
-                    "FROM CARDS c " +
-                    "LEFT JOIN BLOCKS b ON c.id = b.card_id" +
-                    "AND b.unblocked_at IS NULL " +
-                    "INNER JOIN BOARDS_COLUMNS bc ON bc.id = c.board_column_id " +
-                   "WHERE id = ?;";
+        var sql =
+                """
+                 SELECT c.id,
+                      c.title,
+                      c.description,
+                      b.blocked_at,
+                      b.block_reason,
+                      c.board_column_id,
+                      bc.name,
+                      (SELECT COUNT(sub_b.id)
+                              FROM BLOCKS sub_b
+                             WHERE sub_b.card_id = c.id) blocks_amount
+                 FROM CARDS c
+                 LEFT JOIN BLOCKS b
+                   ON c.id = b.card_id
+                  AND b.unblocked_at IS NULL
+                INNER JOIN BOARDS_COLUMNS bc
+                   ON bc.id = c.board_column_id
+                 WHERE c.id = ?;
+                """;
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeQuery();

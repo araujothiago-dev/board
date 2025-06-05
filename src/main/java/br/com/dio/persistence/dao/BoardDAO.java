@@ -30,7 +30,7 @@ public class BoardDAO {
     }
 
     public void delete(final Long id) throws SQLException {
-        var sql = "UPDATE BOARDS SET deleted = false, deleted_at = ? WHERE id = ? AND deleted = false;";
+        var sql = "UPDATE BOARDS SET deleted = true, deleted_at = ? WHERE id = ? AND deleted = false;";
         try (var statement = connection.prepareStatement(sql)) {
             var i = 1;
             statement.setTimestamp(i++, toTimestamp(OffsetDateTime.now()));

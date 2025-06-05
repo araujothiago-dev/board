@@ -36,7 +36,7 @@ public class BoardColumnDAO {
 
     public List<BoardColumnEntity> findByBoardId(final Long boardId) throws SQLException {
         List<BoardColumnEntity> entities = new ArrayList<>();
-        var sql = "SELECT id, name, `order` FROM BOARDS_COLUMNS WHERE id = ? ORDER BY `order`;";
+        var sql = "SELECT id, name, `order`, kind FROM BOARDS_COLUMNS WHERE board_id = ? ORDER BY `order`;";
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, boardId);
             statement.executeQuery();
@@ -56,18 +56,17 @@ public class BoardColumnDAO {
     public List<BoardColumnDTO> findByBoardIdWithDetails(final Long boardId) throws SQLException {
         List<BoardColumnDTO> dtos = new ArrayList<>();
         var sql =
-                "SELECT " +
-                        "bc.id, " +
-                        "bc.name, " +
-                        "bc.kind, " +
-                        "( " +
-                        "SELECT COUNT(c.id) " +
-                        "FROM CARDS c " +
-                        "WHERE c.board_column_id = bc.id cards_amount " +
-                        ") " +
-                  "FROM BOARDS_COLUMNS bc " +
-                 "WHERE board_id = ? " +
-                 "ORDER BY `order`; ";
+                """
+                SELECT bc.id,
+                       bc.name,
+                       bc.kind,
+                       (SELECT COUNT(c.id)
+                               FROM CARDS c
+                              WHERE c.board_column_id = bc.id) cards_amount
+                  FROM BOARDS_COLUMNS bc
+                 WHERE board_id = ?
+                 ORDER BY `order`;
+                """;
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, boardId);
             statement.executeQuery();
@@ -87,15 +86,17 @@ public class BoardColumnDAO {
 
     public Optional<BoardColumnEntity> findById(final Long boardId) throws SQLException {
         var sql =
-                "SELECT " +
-                        "bc.name, " +
-                        "bc.kind, " +
-                        "c.id, " +
-                        "c.title, " +
-                        "c.description, " +
-                "FROM BOARDS_COLUMNS bc " +
-                "LEFT JOIN CARDS c ON c.board_column_id = bc.id " +
-                "WHERE bc.id = ?; ";
+                """
+                SELECT bc.name,
+                       bc.kind,
+                       c.id,
+                       c.title,
+                       c.description
+                  FROM BOARDS_COLUMNS bc
+                  LEFT JOIN CARDS c
+                    ON c.board_column_id = bc.id
+                 WHERE bc.id = ?;
+                """;
         try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, boardId);
             statement.executeQuery();
